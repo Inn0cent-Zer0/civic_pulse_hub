@@ -1,6 +1,7 @@
 package com.civic.smartcity.service;
 
 import com.civic.smartcity.dto.AdminAssignRequest;
+import com.civic.smartcity.dto.AdminUpdateRequest;
 import com.civic.smartcity.dto.GrievanceRequest;
 import com.civic.smartcity.dto.GrievanceResponse;
 import com.civic.smartcity.model.Grievance;
@@ -132,4 +133,34 @@ public class GrievanceService {
             g.getPriority(), g.getDeadline(), g.getDepartment()
         );
     }
+    public GrievanceResponse adminUpdate(Long id, AdminUpdateRequest request, String token) {
+    String role = jwtUtil.getRoleFromToken(token);
+    if (!role.equals("ADMIN")) throw new IllegalArgumentException("Only admins can update.");
+    Grievance g = grievanceRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Not found."));
+    if (request.getStatus() != null) g.setStatus(request.getStatus().toUpperCase());
+    if (request.getAssignedOfficer() != null && !request.getAssignedOfficer().isBlank()) {
+        g.setAssignedOfficer(request.getAssignedOfficer());
+        if ("PENDING".equals(g.getStatus())) g.setStatus("IN_PROGRESS");
+    }
+    if (request.getPriority() != null) g.setPriority(request.getPriority().toUpperCase());
+    if (request.getDeadline() != null && !request.getDeadline().isBlank())
+        g.setDeadline(java.time.LocalDateTime.parse(request.getDeadline()));
+    if (request.getRemarks() != null) g.setRemarks(request.getRemarks());
+    g.setUpdatedAt(java.time.LocalDateTime.now());
+    grievanceRepository.save(g);
+    return toResponse(g);
+}
+
+public java.util.Map<String, Long> getStats() {
+    java.util.Map<String, Long> stats = new java.util.HashMap<>();
+    stats.put("total",      grievanceRepository.count());
+    stats.put("pending",    grievanceRepository.countByStatus("PENDING"));
+    stats.put("inProgress", grievanceRepository.countByStatus("IN_PROGRESS"));
+    stats.put("resolved",   grievanceRepository.countByStatus("RESOLVED"));
+    stats.put("closed",     grievanceRepository.countByStatus("CLOSED"));
+    stats.put("critical",   grievanceRepository.countByPriority("CRITICAL"));
+    stats.put("high",       grievanceRepository.countByPriority("HIGH"));
+    return stats;
+}
 }
