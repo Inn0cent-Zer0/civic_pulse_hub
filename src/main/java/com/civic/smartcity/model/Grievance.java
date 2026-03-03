@@ -1,8 +1,17 @@
 package com.civic.smartcity.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "grievances")
@@ -42,4 +51,13 @@ public class Grievance {
     private String assignedOfficer;
 
     private String remarks;
+
+    //Module 3: Admin panel fields
+
+    private String priority; // LOW, MEDIUM, HIGH
+
+    private LocalDateTime deadline;
+
+    private String Department; // e.g., Public Works, Sanitation, etc.
+    
 }

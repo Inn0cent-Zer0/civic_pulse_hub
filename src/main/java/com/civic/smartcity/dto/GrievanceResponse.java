@@ -1,8 +1,9 @@
 package com.civic.smartcity.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -19,4 +20,8 @@ public class GrievanceResponse {
     private LocalDateTime updatedAt;
     private String assignedOfficer;
     private String remarks;
+    // Module 3
+    private String priority;
+    private LocalDateTime deadline;
+    private String department;
 }
