@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.civic.smartcity.dto.AdminAssignRequest;
+import com.civic.smartcity.dto.AdminUpdateRequest;
 import com.civic.smartcity.dto.GrievanceRequest;
 import com.civic.smartcity.dto.GrievanceResponse;
 import com.civic.smartcity.service.GrievanceService;
@@ -127,4 +128,25 @@ public class GrievanceController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+    @GetMapping("/stats")
+public ResponseEntity<?> getStats(@RequestHeader("Authorization") String authHeader) {
+    try {
+        extractToken(authHeader);
+        return ResponseEntity.ok(grievanceService.getStats());
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+    }
+}
+
+@PutMapping("/{id}/admin-update")
+public ResponseEntity<?> adminUpdate(@PathVariable Long id,
+                                     @RequestBody AdminUpdateRequest request,
+                                     @RequestHeader("Authorization") String authHeader) {
+    try {
+        return ResponseEntity.ok(grievanceService.adminUpdate(id, request, extractToken(authHeader)));
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+    }
+}
+
 }
