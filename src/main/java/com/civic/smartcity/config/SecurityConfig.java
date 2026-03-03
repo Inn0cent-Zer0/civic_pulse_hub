@@ -65,6 +65,7 @@ public class SecurityConfig {
                     "/submit.html",
                     "/mygrievances.html",
                     "/admin.html",
+                    "/admingrievances.html",
                     "/dashboard",
                     "/submit",
                     "/mygrievances",
