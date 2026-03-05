@@ -148,5 +148,18 @@ public ResponseEntity<?> adminUpdate(@PathVariable Long id,
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
     }
 }
+// POST /api/grievances/assign
+@PostMapping("/assign")
+public ResponseEntity<?> assign(
+        @RequestBody AdminAssignRequest request,
+        @RequestHeader("Authorization") String authHeader) {
+    try {
+        String token = extractToken(authHeader);
+        return ResponseEntity.ok(grievanceService.adminAssign(request, token));
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", e.getMessage()));
+    }
+}
 
 }

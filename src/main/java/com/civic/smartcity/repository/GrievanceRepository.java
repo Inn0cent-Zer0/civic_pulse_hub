@@ -11,5 +11,7 @@ public interface GrievanceRepository extends JpaRepository<Grievance, Long> {
     List<Grievance> findAllByOrderBySubmittedAtDesc();
     List<Grievance> findByStatusOrderBySubmittedAtDesc(String status);
     long countByStatus(String status);
+    
+long countByPriority(String priority);
     List<Grievance> findByAssignedOfficerOrderBySubmittedAtDesc(String officer);
 }
